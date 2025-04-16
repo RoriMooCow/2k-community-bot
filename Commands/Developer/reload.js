@@ -9,7 +9,6 @@ const { loadCommands } = require("../../Handlers/commandHandler");
 const { loadEvents } = require("../../Handlers/eventHandler");
 
 module.exports = {
-  developer: true,
   data: new SlashCommandBuilder()
     .setName("reload")
     .setDescription("Reloads commands/events.")

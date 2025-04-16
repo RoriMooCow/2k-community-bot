@@ -10,38 +10,39 @@ const { AuditLogEvent, GuildAuditLogsEntry } = require("discord.js");
  * @returns {Promise<GuildAuditLogsEntry | null>}
  */
 const getAuditLogEntry = async (
-    guild,
-    userId,
-    actionType,
-    filterFn = () => true,
-    maxAttempts = 5,
-    delayMs = 500
+  guild,
+  userId,
+  actionType,
+  filterFn = () => true,
+  maxAttempts = 5,
+  delayMs = 500
 ) => {
-    const wait = ms => new Promise(res => setTimeout(res, ms));
+  const wait = (ms) => new Promise((res) => setTimeout(res, ms));
 
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-        try {
-            const logs = await guild.fetchAuditLogs({
-                limit: 5,
-                type: actionType
-            });
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const logs = await guild.fetchAuditLogs({
+        limit: 5,
+        type: actionType,
+      });
 
-            const entry = logs.entries.find(entry =>
-                entry?.target?.id === userId &&
-                entry?.executor &&
-                filterFn(entry) &&
-                Date.now() - entry.createdTimestamp < 10_000 // 10s freshness
-            );
+      const entry = logs.entries.find(
+        (entry) =>
+          entry?.target?.id === userId &&
+          entry?.executor &&
+          filterFn(entry) &&
+          Date.now() - entry.createdTimestamp < 10_000 // 10s freshness
+      );
 
-            if (entry) return entry;
-        } catch (err) {
-            console.error(`[AuditLog] Fetch failed (attempt ${attempt}):`, err);
-        }
-
-        await wait(delayMs);
+      if (entry) return entry;
+    } catch (err) {
+      console.error(`[AuditLog] Fetch failed (attempt ${attempt}):`, err);
     }
 
-    return null;
+    await wait(delayMs);
+  }
+
+  return null;
 };
 
 module.exports = { getAuditLogEntry };

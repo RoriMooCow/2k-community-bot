@@ -3,8 +3,8 @@ const { Guilds, GuildMembers, GuildMessages, GuildModeration } = GatewayIntentBi
 const { User, Message, GuildMember, ThreadMember } = Partials;
 
 const client = new Client({
-    intents: [Guilds, GuildMembers, GuildMessages, GuildModeration],
-    partials: [User, Message, GuildMember, ThreadMember]
+  intents: [Guilds, GuildMembers, GuildMessages, GuildModeration],
+  partials: [User, Message, GuildMember, ThreadMember],
 });
 
 client.config = require("./config.json");

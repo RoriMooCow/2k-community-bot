@@ -15,13 +15,6 @@ module.exports = {
         flags: MessageFlags.Ephemeral,
       });
 
-    if (command.developer && interaction.user.id !== "133111159887888385")
-      return interaction.reply({
-        content:
-          "You do not have permission to use this command. (Developer only)",
-        flags: MessageFlags.Ephemeral,
-      });
-
     command.execute(interaction, client);
   },
 };

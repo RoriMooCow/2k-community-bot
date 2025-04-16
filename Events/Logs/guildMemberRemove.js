@@ -5,7 +5,6 @@ const { getAuditLogEntry } = require("../../Functions/getAuditLogEntry.js");
 module.exports = {
   name: "guildMemberRemove",
   /**
-   *
    * @param {GuildMember} member
    */
   async execute(member, client) {

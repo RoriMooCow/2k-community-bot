@@ -33,7 +33,7 @@ module.exports = {
       if (!kicked) return;
 
       const kickEmbed = new EmbedBuilder()
-        .setColor(16711680)
+        .setColor(16753920)
         .setAuthor({
           name: `Member has been kicked.`,
         })

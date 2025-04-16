@@ -1,10 +1,20 @@
 const { Client, GatewayIntentBits, Partials, Collection } = require("discord.js");
-const { Guilds, GuildMembers, GuildMessages, GuildModeration } = GatewayIntentBits;
-const { User, Message, GuildMember, ThreadMember } = Partials;
 
 const client = new Client({
-  intents: [Guilds, GuildMembers, GuildMessages, GuildModeration],
-  partials: [User, Message, GuildMember, ThreadMember],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildModeration,
+    GatewayIntentBits.MessageContent,
+  ],
+  partials: [
+    Partials.User,
+    Partials.Channel,
+    Partials.Message,
+    Partials.GuildMember,
+    Partials.ThreadMember,
+  ],
 });
 
 client.config = require("./config.json");

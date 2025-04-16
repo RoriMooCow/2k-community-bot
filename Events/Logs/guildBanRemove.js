@@ -3,49 +3,56 @@ const config = require("../../config.json");
 const { getAuditLogEntry } = require("../../Functions/getAuditLogEntry.js");
 
 module.exports = {
-    name: "guildBanRemove",
-    /**
-     * @param {GuildBan} unban 
-     */
-    async execute(unban, client) {
-        const { user, guild } = unban;
-        const logChannel = await guild.channels.fetch(config.logChannel);
-        
-        let moderator = null;
-        let reason = "None specified."
-        let time = `<t:${Math.floor(Date.now() / 1000)}:F>`;
+  name: "guildBanRemove",
+  /**
+   * @param {GuildBan} unban
+   */
+  async execute(unban, client) {
+    try {
+      const { user, guild } = unban;
+      const logChannel = await guild.channels.fetch(config.logChannel);
 
-        const unbanLog = await getAuditLogEntry(
-            guild,
-            user.id,
-            AuditLogEvent.MemberBanRemove
-        );
+      let moderator = null;
+      let reason = "None specified.";
+      let time = Date.now();
 
-        if (unbanLog) {
-            moderator = unbanLog.executor;
-            reason = unbanLog.reason || reason;
-            time = `<t:${Math.floor(unbanLog.createdTimestamp / 1000)}:F>`;
-        }
+      const unbanLog = await getAuditLogEntry(
+        guild,
+        user.id,
+        AuditLogEvent.MemberBanRemove
+      );
 
-        const unbanEmbed = new EmbedBuilder()
-            .setColor(65280)
-            .setAuthor({
-                name: `${user.tag} has been unbanned.`,
-                iconURL: user.displayAvatarURL()
-            })
-            .setFields(
-                {
-                    name: "Moderator",
-                    value: moderator
-                        ? `${moderator.tag} (<@${moderator.id}>)`
-                        : "Unknown"
-                },
-                {
-                    name: "Date",
-                    value: time
-                }
-            );
-        
-        logChannel.send({ embeds: [ unbanEmbed ] });
+      if (unbanLog) {
+        moderator = unbanLog.executor;
+        reason = unbanLog.reason || reason;
+        time = unbanLog.createdTimestamp;
+      }
+
+      const unbanEmbed = new EmbedBuilder()
+        .setColor(65280)
+        .setAuthor({
+          name: `Member has been unbanned.`,
+        })
+        .setThumbnail(user.displayAvatarURL({ dynamic: true }))
+        .setFields([
+          {
+            name: "Member",
+            value: `${user.tag} (<@${user.id}>)`,
+            inline: true,
+          },
+          {
+            name: "Unbanned by",
+            value: moderator
+              ? `${moderator.tag} (<@${moderator.id}>)`
+              : "Unknown",
+            inline: true,
+          },
+        ])
+        .setTimestamp(time);
+
+      logChannel.send({ embeds: [unbanEmbed] });
+    } catch (error) {
+      console.error("Error handling guildBanRemove:", error);
     }
+  },
 };

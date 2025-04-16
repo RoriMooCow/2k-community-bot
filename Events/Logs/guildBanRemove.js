@@ -13,7 +13,6 @@ module.exports = {
       const logChannel = await guild.channels.fetch(config.logChannel);
 
       let moderator = null;
-      let reason = "None specified.";
       let time = Date.now();
 
       const unbanLog = await getAuditLogEntry(
@@ -24,7 +23,6 @@ module.exports = {
 
       if (unbanLog) {
         moderator = unbanLog.executor;
-        reason = unbanLog.reason || reason;
         time = unbanLog.createdTimestamp;
       }
 

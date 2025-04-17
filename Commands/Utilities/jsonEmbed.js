@@ -1,4 +1,12 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+  MessageFlags,
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+} = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -13,32 +21,55 @@ module.exports = {
     ),
 
   async execute(interaction) {
+    const file = interaction.options.getAttachment("file");
+
+    if (!file.name.endsWith(".json")) {
+      return await interaction.reply({
+        content: "Invalid file. Please upload a '.json' file.",
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+
     try {
-      const file = interaction.options.getAttachment("file");
-
-      if (!file.name.endsWith(".json")) return;
-
       const response = await fetch(file.url);
-      const text = await response.text();
+      const json = await response.json();
 
-      const data = JSON.parse(text);
-      if (!data.embeds || !Array.isArray(data.embeds)) return;
+      const embeds = (json.embeds || []).map((data) => EmbedBuilder.from(data));
 
-      await interaction.deferReply({ flags: ephemeral });
-      await interaction.channel.send({ embeds: data.embeds });
+      const components = (json.components || []).map((row) => {
+        const newRow = new ActionRowBuilder();
+
+        for (const component of row.components) {
+          const isLinkButton = component.style === ButtonStyle.Link;
+
+          if (isLinkButton && component.custom_id) {
+            delete component.custom_id;
+          }
+
+          const button = new ButtonBuilder()
+            .setStyle(component.style)
+            .setLabel(component.label || "")
+            .setDisabled(component.disabled || false);
+
+          if (component.emoji) button.setEmoji(component.emoji);
+          if (component.url) button.setURL(component.url);
+          else if (component.custom_id) button.setCustomId(component.custom_id);
+
+          newRow.addComponents(button);
+        }
+
+        return newRow;
+      });
+
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+      await interaction.channel.send({ embeds, components });
       await interaction.deleteReply();
     } catch (error) {
       console.error("Failed to process embed JSON:", error);
-      if (interaction.deferred || interaction.replied) {
-        await interaction.editReply({
-          content: "Failed to process JSON file.",
-        });
-      } else {
-        await interaction.reply({
-          content: "Failed to process JSON file.",
-          flags: ephemeral,
-        });
-      }
+      await interaction.reply({
+        content: "Failed to process JSON file.",
+        flags: MessageFlags.Ephemeral,
+      });
     }
   },
 };

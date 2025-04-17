@@ -2,5 +2,6 @@
     "token": "bot-token",
     "guildID": "1354300416933757089", 
     "logChannel": "1354636359737806848",
-    "reviewChannel": "1354636587186520204"
+    "reviewChannel": "1354636587186520204",
+    "forumChannelId": "1360409270176317681"
 }

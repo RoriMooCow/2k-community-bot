@@ -15,10 +15,9 @@ async function loadCommands(client) {
       commands.push(command.data.toJSON());
       commandsNames.push({ Command: command.data.name, Status: "😎" });
     } catch (error) {
-      commandsNames.push({
-        Command: file.split("/").pop().slice(0, -3),
-        Status: "😡",
-      });
+      const commandName = file.split("/").pop().slice(0, -3);
+      console.error(`Failed to load ${commandName}:`, error);
+      commandsNames.push({ Command: commandName, Status: "😡" });
     }
   }
 

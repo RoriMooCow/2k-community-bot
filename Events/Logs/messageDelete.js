@@ -35,23 +35,20 @@ module.exports = {
       const deleteEmbed = new EmbedBuilder()
         .setColor(16776960)
         .setAuthor({
-          name: "Message deleted by moderator.",
+          name: "〘🗑️〙 Message Deleted",
+          iconURL: author.displayAvatarURL({ dynamic: true }),
         })
-        .setThumbnail(author.displayAvatarURL({ dynamic: true }))
-        .setFields([
-          {
-            name: "Member",
-            value: `${author.tag} (<@${author.id}>)`,
-            inline: true,
-          },
+        .setDescription(`A message from **${author.tag}** (<@${author.id}>) was deleted.`)
+        .addFields(
           {
             name: "Moderator",
             value: moderator
               ? `${moderator.tag} (<@${moderator.id}>)`
-              : "Unknown",
+              : "Unknown Moderator",
             inline: true,
           },
-        ])
+        )
+        .setFooter({ text: `User ID: ${author.id}` })
         .setTimestamp(time);
 
       logChannel.send({ embeds: [deleteEmbed] });

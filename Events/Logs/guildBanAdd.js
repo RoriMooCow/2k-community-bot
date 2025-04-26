@@ -31,28 +31,25 @@ module.exports = {
       const banEmbed = new EmbedBuilder()
         .setColor(16711680)
         .setAuthor({
-          name: `Member has been banned.`,
+          name: "〘⛔〙 Member Banned",
+          iconURL: user.displayAvatarURL({ dynamic: true }),
         })
-        .setThumbnail(user.displayAvatarURL({ dynamic: true }))
-        .addFields([
+        .setDescription(`**${user.tag}** (<@${user.id}>) has been banned.`)
+        .addFields(
           {
-            name: "Member",
-            value: `${user.tag} (<@${user.id}>)`,
-            inline: true,
-          },
-          {
-            name: "Banned by",
+            name: "Moderator",
             value: moderator
               ? `${moderator.tag} (<@${moderator.id}>)`
-              : "Unknown",
+              : "Unknown Moderator",
             inline: true,
           },
           {
             name: "Reason",
-            value: reason,
-            inline: false,
+            value: reason || "No reason provided.",
+            inline: true,
           },
-        ])
+        )
+        .setFooter({ text: `User ID: ${user.id}` })
         .setTimestamp(time);
 
       logChannel.send({ embeds: [banEmbed] });

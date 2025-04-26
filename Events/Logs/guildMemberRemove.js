@@ -35,28 +35,25 @@ module.exports = {
       const kickEmbed = new EmbedBuilder()
         .setColor(16753920)
         .setAuthor({
-          name: `Member has been kicked.`,
+          name: "〘👢〙 Member Kicked",
+          iconURL: user.displayAvatarURL({ dynamic: true }),
         })
-        .setThumbnail(user.displayAvatarURL({ dynamic: true }))
-        .setFields([
+        .setDescription(`**${user.tag}** (<@${user.id}>) has been kicked.`)
+        .setFields(
           {
-            name: "Member",
-            value: `${user.tag} (<@${user.id}>)`,
-            inline: true,
-          },
-          {
-            name: "Kicked by",
+            name: "Moderator",
             value: moderator
               ? `${moderator.tag} (<@${moderator.id}>)`
-              : "Unknown",
+              : "Unknown Moderator",
             inline: true,
           },
           {
             name: "Reason",
-            value: reason,
-            inline: false,
+            value: reason || "No reason provided.",
+            inline: true,
           },
-        ])
+        )
+        .setFooter({ text: `User ID: ${user.id}` })
         .setTimestamp(time);
 
       logChannel.send({ embeds: [kickEmbed] });

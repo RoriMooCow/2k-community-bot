@@ -29,23 +29,20 @@ module.exports = {
       const unbanEmbed = new EmbedBuilder()
         .setColor(65280)
         .setAuthor({
-          name: `Member has been unbanned.`,
+          name: "〘🟢〙Member Unbanned",
+          iconURL: user.displayAvatarURL({ dynamic: true }),
         })
-        .setThumbnail(user.displayAvatarURL({ dynamic: true }))
-        .setFields([
+        .setDescription(`**${user.tag}** (<@${user.id}>) has been unbanned.`)
+        .setFields(
           {
-            name: "Member",
-            value: `${user.tag} (<@${user.id}>)`,
-            inline: true,
-          },
-          {
-            name: "Unbanned by",
+            name: "Moderator",
             value: moderator
               ? `${moderator.tag} (<@${moderator.id}>)`
-              : "Unknown",
+              : "Unknown Moderator",
             inline: true,
           },
-        ])
+        )
+        .setFooter({ text: `User ID: ${user.id}` })
         .setTimestamp(time);
 
       logChannel.send({ embeds: [unbanEmbed] });

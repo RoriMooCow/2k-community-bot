@@ -13,11 +13,11 @@ async function loadCommands(client) {
       const command = require(file);
       client.commands.set(command.data.name, command);
       commands.push(command.data.toJSON());
-      commandsNames.push({ Command: command.data.name, Status: "😎" });
+      commandsNames.push({ Command: command.data.name, Status: "  (:  " });
     } catch (error) {
       const commandName = file.split("/").pop().slice(0, -3);
       console.error(`Failed to load ${commandName}:`, error);
-      commandsNames.push({ Command: commandName, Status: "😡" });
+      commandsNames.push({ Command: commandName, Status: "  ):  " });
     }
   }
 
